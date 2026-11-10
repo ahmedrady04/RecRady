@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-10. Step 1 is in the tree.
+Last updated: 2026-11-10. Steps 1 and 2 are in the tree.
 
 ## Done
 
@@ -12,6 +12,7 @@ Last updated: 2026-11-10. Step 1 is in the tree.
   - Positional reads: `pread` on Unix, looped `seek_read` on Windows.
 - Integration tests for short, unaligned, empty, past-the-end, overflow, missing file, bad sector size, concurrent reads, and "source bytes unchanged".
 - CI: macOS + Windows (fmt, clippy, test) and Ubuntu (`cargo-deny`).
+- Competitor and license research: `docs/research/competitors.md`.
 
 ## Not started
 
@@ -22,9 +23,10 @@ Last updated: 2026-11-10. Step 1 is in the tree.
 
 ## Next step
 
-Competitor and license research in `docs/research/competitors.md`: feasibility matrix, license matrix, UX gaps. No product code in that step.
+`core-imaging`: RAW copy, bad ranges become zeros in the destination only, source bytes and mtime unchanged, SHA-256 of the destination in the report. Acceptance test is in `docs/research/competitors.md`.
 
 ## Open decisions
 
 - Public GitHub repo while the product is commercial. Consider making it private before carving algorithms land.
-- C libraries (libewf, libyal) only inside an isolated crate, and only if no suitable Rust crate exists. LGPL needs a legal check before use.
+- No LGPL/GPL/CPL linked in. Confirmed 2026-11-10 for TSK (CPL-1.0 / IBM-PL), libyal and libewf (LGPL-3.0-or-later), TestDisk/PhotoRec (GPL-2.0). A lawyer before any exception.
+- exFAT metadata recovery is best effort. The Microsoft spec marks unused entry fields as undefined.
