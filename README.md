@@ -17,12 +17,14 @@ This repository is proprietary. There is no open-source license. All rights rese
 
 ```
 crates/core-device/     BlockDevice trait + RAW image reader
+crates/core-imaging/    RAW copy, bad sectors, SHA-256
 docs/decisions/         Architecture decision records
+docs/research/          Competitor and license notes
 docs/STATUS.md          What is done and what is next
 AGENTS.md               Rules for anyone changing this repo
 ```
 
-Upper layers (`core-imaging`, filesystem parsers, carving, UI) are not in the tree yet. Add a crate when its phase starts. Do not add empty crates.
+Filesystem parsers, carving, and the UI are not in the tree yet. Add a crate when its phase starts. Do not add empty crates.
 
 ## Build and test
 

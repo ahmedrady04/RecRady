@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-10. Steps 1 and 2 are in the tree.
+Last updated: 2026-11-10. Steps 1 through 3 are in the tree.
 
 ## Done
 
@@ -13,17 +13,17 @@ Last updated: 2026-11-10. Steps 1 and 2 are in the tree.
 - Integration tests for short, unaligned, empty, past-the-end, overflow, missing file, bad sector size, concurrent reads, and "source bytes unchanged".
 - CI: macOS + Windows (fmt, clippy, test) and Ubuntu (`cargo-deny`).
 - Competitor and license research: `docs/research/competitors.md`.
+- `core-imaging`: RAW copy to a different file, sector retry, zero-fill of unreadable ranges, SHA-256 of the bytes written. Same-file and hard-link destinations are refused. See `docs/decisions/0003-raw-imaging.md`.
 
 ## Not started
 
-- `core-imaging` (RAW imaging, bad sectors, SHA-256).
 - FAT / exFAT / NTFS parsers.
 - Carving, preview, UI, privileged helper.
 - Code signing and installers (phase 8).
 
 ## Next step
 
-`core-imaging`: RAW copy, bad ranges become zeros in the destination only, source bytes and mtime unchanged, SHA-256 of the destination in the report. Acceptance test is in `docs/research/competitors.md`.
+FAT32 deleted-file recovery on fixture images. Acceptance tests are in `docs/research/competitors.md`: a deleted file whose clusters are still free comes back intact, and the `0xE5` first-byte loss is handled when there is no long name. No exFAT until that FAT case is proven.
 
 ## Open decisions
 
