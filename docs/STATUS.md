@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-10. Imaging can be run on a file from the command line.
+Last updated: 2026-11-10. FAT32 deleted files can be restored from an image file.
 
 ## Done
 
@@ -15,16 +15,17 @@ Last updated: 2026-11-10. Imaging can be run on a file from the command line.
 - Competitor and license research: `docs/research/competitors.md`.
 - `core-imaging`: RAW copy to a different file, sector retry, zero-fill of unreadable ranges, SHA-256 of the bytes written. Same-file and hard-link destinations are refused. See `docs/decisions/0003-raw-imaging.md`.
 - `recrady image <source.img> <destination.img>`: file-only CLI. Disk paths are rejected before open. See `docs/decisions/0004-file-only-cli.md`.
+- `fs-fat` and `recrady recover <source.img> <directory>`: FAT32 deleted files whose clusters are still free, including a file inside a live folder, from a bare volume or a GPT/MBR image. See `docs/decisions/0005-fat32-undelete.md`.
 
 ## Not started
 
-- FAT / exFAT / NTFS parsers.
+- exFAT and NTFS parsers.
 - Carving, preview, UI, privileged helper.
 - Code signing and installers (phase 8).
 
 ## Next step
 
-FAT32 deleted-file recovery on fixture images. Acceptance tests are in `docs/research/competitors.md`: a deleted file whose clusters are still free comes back intact, and the `0xE5` first-byte loss is handled when there is no long name. No exFAT until that FAT case is proven.
+exFAT deleted-file recovery, best effort. The Microsoft exFAT specification marks unused directory fields as undefined, so a wiped entry must not invent a file. NTFS comes after that.
 
 ## Open decisions
 

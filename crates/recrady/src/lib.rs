@@ -4,11 +4,13 @@
 //! any file is opened, so it cannot be pointed at a live drive.
 
 mod guard;
+mod recover_cmd;
 
 use std::path::Path;
 
 use core_device::ImageFileDevice;
 use core_imaging::{ImageOptions, ImageReport, image_raw};
+use fs_fat::Recovery;
 
 pub use guard::CliError;
 
@@ -22,4 +24,9 @@ pub fn image_files(source: &Path, destination: &Path) -> Result<ImageReport, Cli
         destination,
         ImageOptions::new(Some(source)),
     )?)
+}
+
+/// Recovers deleted FAT32 files from an image into a directory.
+pub fn recover_files(source: &Path, destination: &Path) -> Result<Recovery, CliError> {
+    recover_cmd::recover_files(source, destination)
 }

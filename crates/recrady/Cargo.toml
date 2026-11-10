@@ -11,6 +11,7 @@ repository.workspace = true
 [dependencies]
 core-device.workspace = true
 core-imaging.workspace = true
+fs-fat.workspace = true
 thiserror.workspace = true
 
 [dev-dependencies]

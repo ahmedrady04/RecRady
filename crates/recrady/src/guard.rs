@@ -4,12 +4,15 @@ use std::path::{Component, Path, PathBuf};
 
 use core_device::DeviceError;
 use core_imaging::ImageError;
+use fs_fat::FatError;
 
 /// Why the file-only command refused to run.
 #[derive(Debug, thiserror::Error)]
 pub enum CliError {
     /// The arguments were not `image <source> <destination>`.
-    #[error("usage: recrady image <source.img> <destination.img>")]
+    #[error(
+        "usage: recrady image <source.img> <destination.img>\n       recrady recover <source.img> <destination-directory>"
+    )]
     Usage,
 
     /// The path is a disk or device namespace, not a file.
@@ -19,6 +22,18 @@ pub enum CliError {
     /// The path exists but is not a regular file.
     #[error("not a regular file: {}", .0.display())]
     NotAFile(PathBuf),
+
+    /// Recovery output has to be a directory.
+    #[error("destination is not a directory: {}", .0.display())]
+    NotADirectory(PathBuf),
+
+    /// The destination path is the source image.
+    #[error("destination is the source image")]
+    DestinationIsSource,
+
+    /// A recovered relative path was not a plain file name.
+    #[error("refusing output path {}", .0.display())]
+    UnsafeOutput(PathBuf),
 
     /// Reading file metadata failed.
     #[error("cannot inspect {}: {source}", path.display())]
@@ -37,6 +52,10 @@ pub enum CliError {
     /// Imaging failed after the path checks.
     #[error(transparent)]
     Image(#[from] ImageError),
+
+    /// Reading the FAT32 image failed.
+    #[error(transparent)]
+    Fat(#[from] FatError),
 }
 
 pub(crate) fn require_regular_file(path: &Path) -> Result<(), CliError> {
@@ -53,6 +72,44 @@ pub(crate) fn require_regular_file(path: &Path) -> Result<(), CliError> {
         source,
     })?;
     reject_device_path(&canonical)
+}
+
+pub(crate) fn require_output_dir(source: &Path, destination: &Path) -> Result<(), CliError> {
+    reject_device_path(destination)?;
+    if same_path(source, destination).map_err(|source_error| CliError::Io {
+        path: destination.to_path_buf(),
+        source: source_error,
+    })? {
+        return Err(CliError::DestinationIsSource);
+    }
+    if destination.exists() {
+        if !destination.is_dir() {
+            return Err(CliError::NotADirectory(destination.to_path_buf()));
+        }
+        let canonical = destination.canonicalize().map_err(|source| CliError::Io {
+            path: destination.to_path_buf(),
+            source,
+        })?;
+        return reject_device_path(&canonical);
+    }
+    if let Some(parent) = destination.parent()
+        && parent.components().next().is_some()
+        && parent.exists()
+    {
+        let canonical = parent.canonicalize().map_err(|source| CliError::Io {
+            path: parent.to_path_buf(),
+            source,
+        })?;
+        reject_device_path(&canonical)?;
+    }
+    Ok(())
+}
+
+fn same_path(left: &Path, right: &Path) -> io::Result<bool> {
+    if left.exists() && right.exists() {
+        return Ok(left.canonicalize()? == right.canonicalize()?);
+    }
+    Ok(std::path::absolute(left)? == std::path::absolute(right)?)
 }
 
 pub(crate) fn require_safe_destination(path: &Path) -> Result<(), CliError> {
