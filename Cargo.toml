@@ -12,6 +12,7 @@ repository = "https://github.com/ahmedrady04/RecRady"
 
 [workspace.dependencies]
 core-device = { path = "crates/core-device", version = "0.1.0" }
+core-imaging = { path = "crates/core-imaging", version = "0.1.0" }
 sha2 = "0.10"
 tempfile = "3"
 thiserror = "2"

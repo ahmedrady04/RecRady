@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-10. Steps 1 through 3 are in the tree.
+Last updated: 2026-11-10. Imaging can be run on a file from the command line.
 
 ## Done
 
@@ -14,6 +14,7 @@ Last updated: 2026-11-10. Steps 1 through 3 are in the tree.
 - CI: macOS + Windows (fmt, clippy, test) and Ubuntu (`cargo-deny`).
 - Competitor and license research: `docs/research/competitors.md`.
 - `core-imaging`: RAW copy to a different file, sector retry, zero-fill of unreadable ranges, SHA-256 of the bytes written. Same-file and hard-link destinations are refused. See `docs/decisions/0003-raw-imaging.md`.
+- `recrady image <source.img> <destination.img>`: file-only CLI. Disk paths are rejected before open. See `docs/decisions/0004-file-only-cli.md`.
 
 ## Not started
 

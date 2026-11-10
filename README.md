@@ -18,6 +18,7 @@ This repository is proprietary. There is no open-source license. All rights rese
 ```
 crates/core-device/     BlockDevice trait + RAW image reader
 crates/core-imaging/    RAW copy, bad sectors, SHA-256
+crates/recrady/         `recrady image` for regular files only
 docs/decisions/         Architecture decision records
 docs/research/          Competitor and license notes
 docs/STATUS.md          What is done and what is next
@@ -34,6 +35,9 @@ Requirements are in [REQUIREMENTS.md](REQUIREMENTS.md).
 cargo fmt --all -- --check
 cargo clippy --all-targets -- -D warnings
 cargo test --all-targets
+cargo run -p recrady -- image source.img copy.img
 ```
+
+`recrady image` reads a regular file and writes a different file. It refuses `/dev/disk`, `\\.\PhysicalDrive`, and directories.
 
 Continuous integration runs the same commands on macOS and Windows, plus a license check (`cargo-deny`) that rejects copyleft dependencies.
